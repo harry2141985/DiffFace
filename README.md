@@ -3,65 +3,76 @@
 This is a fork from the original project.
 - Added a colab notebook.
 - Commenting the code.
+- Documenting the arguments.
 
-You can find the colab notebook to the project in this link:
+You can find the colab notebook in this link:
 https://colab.research.google.com/drive/1GNPf5_PnX2QZASdg7P3dC76V8UgrVtWJ?usp=sharing
 
-## Environment setup
+## Arguments details
+
+In the above Colab, we run the code without arguments, you can add arguments to the code like so:
 ```
-git clone https://github.com/hxngiee/DiffFace.git
-cd DiffFace
-conda create -n DiffFace python=3.9.7
-conda activate DiffFace
-
-conda install pytorch==1.10.0 torchvision==0.11.0 torchaudio==0.10.0 -c pytorch 
-
-pip install -r requirements.txt
+!python main.py --masking_threshold 60
 ```
 
+Here are the supported arguments:
 
-## Download Pretrained Weights
-The weights required for the execution of our DiffFace can be downloaded from [link](
-https://gisto365-my.sharepoint.com/:f:/g/personal/hongieee_gm_gist_ac_kr/Eolr4xhyDZdJhEqAjuVCMN8B7pdbvnMxEMiT4jB7w63uHg?e=KDoCnr). 
-```
-mkdir checkpoints
-mv Arcface.tar checkpoints/ 
-mv FaceParser.pth checkpoints/ 
-mv GazeEstimator.pt checkpoints/
-mv Model.pt checkpoints/
-```
+### --batch_size
+Larger batch sizes can accelerate the training process by processing more samples in parallel but may require more memory. 
+However, smaller batch sizes can provide more accurate gradient estimates and better generalization but may require more iterations to converge.
+default=1
 
-## Directories structure
+### --skip_timesteps
+Skipping steps in the diffusion process refers to bypassing or not performing certain intermediate steps and directly applying the diffusion operation at a later stage. 
+This approach is often used to speed up the inference process or reduce computational requirements.
+Skipping too many steps may result in a loss of fine-grained details or accuracy, while fewer skipped steps may provide more accurate results but at the cost of increased computation.
+default=25
 
-The dataset and checkpoints should be placed in the following structures below
+### --ddim
+DDPM = Denoising Diffusion Probabilistic Model
+DDIM = Denoising Diffusion Implicit Model
+DDIM are a more efficient class of iterative implicit probabilistic models with the same training procedure as DDPMs
+Default is DDPM add --ddim if you want to use it
 
-```
-DiffFace
-├── checkpoints
-    ├── Arcface.tar
-    ├── FaceParser.pth
-    ├── GazeEstimator.pt
-    └── Model.pt
-├── data
-    └── src
-        ├── 001.png
-        └── ...
-    └── targ
-        ├── 001.png
-        └── ...
-├── models
-├── optimization
-├── utils
-└── main.py
-```
+### --timestep_respacing
+Timestep respacing is a technique used in diffusion models to control the density of sampling during the diffusion process. 
+In diffusion models, the goal is to transform an input distribution to a target distribution through a series of iterative steps. 
+Timestep respacing refers to adjusting the spacing or density of these steps to achieve specific properties or characteristics in the generated samples.
+For more details read https://github.com/openai/guided-diffusion/blob/main/guided_diffusion/respace.py
+default=100 (number between 1 and 1000)
 
-## Quick Inference Using Pretrained Model 
+### --no_enforce_background
+Add this argument if you do not want to preserve the destination background
+Default is enabled, add --no_enforce_background to disable it
 
-Place source and target images in data/src, and data/targ. Then run the following. 
+### --aug_num
+Data augmentation is a common technique used to artificially increase the diversity and size of the training dataset by applying various transformations or modifications to the existing data.
+Increasing the number of augmentations can help improve the model's generalization ability by exposing it to a wider range of variations and reducing the risk of overfitting.
+default=8
 
-```
-python main.py --output_path output/example
-```
+### --seed
+Random seed default=404
+
+### --gpu_id
+The GPU ID default=0
+
+### --output_path
+The output path, default=output
+Folder will be created if doesn't exist
+
+### --output_file
+The output result file
+default=output.png
+
+### --iterations_num
+Increasing the number of iterations allows for more fine-grained transformations and can potentially capture more details in the generated samples.
+However, it also increases the computational cost and may require more memory.
+default=4
+
+### --masking_threshold
+Target-preserving blending is to gradually increase the mask intensity from zero to one, according to the time of the diffusion process T.
+The masking_threshold argument sets the Target-preserving blending time.
+default=30
 
 ## License
 This licence allows for academic and non-commercial purpose only. The entire project is under the CC-BY-NC 4.0 license.
