@@ -85,9 +85,8 @@ def get_arguments() -> argparse.Namespace:
     # default=4
     parser.add_argument("--iterations_num", type=int, help="The number of iterations", default=4)
 
-    # In the context of DDPM, the term "masking threshold" is not a commonly used concept.
-    # It is not standard in face parsing, nor in Gaze Estimation.
-    # I'm still trying to understand where it is used in this project.
+    # Target-preserving blending is to gradually increase the mask intensity from zero to one, according to the time of the diffusion process T.
+    # The masking_threshold argument sets the Target-preserving blending time.
     # default=30
     parser.add_argument("--masking_threshold", type=int, help="The number of masking threshold", default=30)
 
