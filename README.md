@@ -1,6 +1,11 @@
 # DiffFace: Diffusion-based Face Swapping with Facial Guidance
 
-Official PyTorch implementation of Diffusion-based Face Swapping with Facial Guidance
+This is a fork from the original project.
+- Added a colab notebook.
+- Commenting the code.
+
+You can find the colab notebook to the project in this link:
+https://colab.research.google.com/drive/1GNPf5_PnX2QZASdg7P3dC76V8UgrVtWJ?usp=sharing
 
 ## Environment setup
 ```
