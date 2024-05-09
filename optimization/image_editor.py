@@ -120,7 +120,7 @@ class ImageEditor:
         self.netSeg.eval()
 
         self.netGaze = Gaze_estimator().to(self.device)
-        self.fa = face_alignment.FaceAlignment(face_alignment.LandmarksType._2D, flip_input=False)
+        self.fa = face_alignment.FaceAlignment(face_alignment.LandmarksType.TWO_D, flip_input=False)
 
         print('done')
         
