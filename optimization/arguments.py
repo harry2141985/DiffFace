@@ -90,5 +90,9 @@ def get_arguments() -> argparse.Namespace:
     # default=30
     parser.add_argument("--masking_threshold", type=int, help="The number of masking threshold", default=30)
 
+    # We give identity guidance to prevent loss of source identity in the denoising process.
+    # default=6000
+    parser.add_argument("--loss_weight", type=int, help="ID loss weight", default=6000)
+
     args = parser.parse_args()
     return args
