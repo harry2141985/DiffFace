@@ -97,6 +97,11 @@ Target-preserving blending is to gradually increase the mask intensity from zero
 
 The masking_threshold argument sets the Target-preserving blending time.
 
+### --loss_weight
+We give identity guidance to prevent loss of source identity in the denoising process.
+
+default=6000
+
 default=30
 
 ## License
