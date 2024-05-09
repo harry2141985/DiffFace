@@ -210,7 +210,7 @@ class ImageEditor:
                 arc_src   = transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])(arc_src)
                 arc_targ  = (targ + 1) / 2
                 arc_targ  = transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])(arc_targ)
-                id_loss   = self.id_loss(arc_src, arc_targ, self.netArc) * 6000
+                id_loss   = self.id_loss(arc_src, arc_targ, self.netArc) * self.args.loss_weight
 
                 loss = loss + id_loss
                 self.metrics_accumulator.update_metric("id_loss", id_loss.item())
