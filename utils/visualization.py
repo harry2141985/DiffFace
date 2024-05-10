@@ -29,6 +29,7 @@ def show_tensor_image(tensor: torch.Tensor, range_zero_one: bool = False):
         plt.show(block=True)
 
 
+# This function takes source, target, predicted and mask images, and ouputs them as the visualisation table we get in the output
 def show_editied_masked_image(
     title: str,
     source_image: Image,
