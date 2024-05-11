@@ -2,8 +2,9 @@
 
 This is a fork from the original project.
 - Added a colab notebook.
-- Commenting the code.
+- Commenting and fixing the code.
 - Documenting the arguments.
+- Added support for input photos alignment and cropping.
 
 You can find the colab notebook in this link:
 https://colab.research.google.com/drive/1GNPf5_PnX2QZASdg7P3dC76V8UgrVtWJ?usp=sharing
@@ -112,17 +113,6 @@ default=512
 ## License
 This licence allows for academic and non-commercial purpose only. The entire project is under the CC-BY-NC 4.0 license.
 
-## Citation
-If you find DiffFace useful for your work please cite:
-```
-@inproceedings{kim2022diffface,
-  title = {DiffFace: Diffusion-based Face Swapping with Facial Guidance},
-  author = {K. Kim, Y. Kim, S. Cho, J. Seo, J. Nam, K. Lee, S. Kim, K. Lee},
-  journal = {Arxiv},
-  year = {2022}
-}
-```
-
 ## Acknowledgments
-This code borrows heavily from [Blended-Diffusion](https://github.com/omriav/blended-diffusion) and [Guided-Diffusion](https://github.com/openai/guided-diffusion).
+This was forked from the original project [DiffFace](https://github.com/hxngiee/DiffFace).
 
