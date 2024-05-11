@@ -1,4 +1,5 @@
 import argparse
+from re import S
 
 def get_arguments() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
@@ -94,5 +95,8 @@ def get_arguments() -> argparse.Namespace:
     # default=6000
     parser.add_argument("--loss_weight", type=int, help="ID loss weight", default=6000)
 
+    # Input images are aligned and cropped into data/aligned folder, to be processed by the learning models
+    # default=512
+    parser.add_argument("--crop_size", type=int, help="The size of the aligned and cropped images", default=512)
     args = parser.parse_args()
     return args

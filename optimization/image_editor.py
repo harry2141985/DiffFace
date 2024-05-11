@@ -363,9 +363,9 @@ class ImageEditor:
             return out
 
         # load source images and resize to 256, remember our model was trained on 256 images
-        src_dataset  = VGGDataset(path='./data/src',  img_size=256)
+        src_dataset  = VGGDataset(path='./data/aligned/src',  img_size=256)
         # load destination images and resize to 256, remember our model was trained on 256 images
-        targ_dataset = VGGDataset(path='./data/targ', img_size=256)
+        targ_dataset = VGGDataset(path='./data/aligned/targ', img_size=256)
         # Use the Python iterable over the dataset
         src_loader   = DataLoader(src_dataset,  num_workers=4, shuffle=False, batch_size=1)
         targ_loader  = DataLoader(targ_dataset, num_workers=4, shuffle=False, batch_size=1)
