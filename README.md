@@ -104,6 +104,11 @@ We give identity guidance to prevent loss of source identity in the denoising pr
 
 default=6000
 
+### --crop_size
+Input images are aligned and cropped into data/aligned folder, to be processed by the learning models.
+
+default=512
+
 ## License
 This licence allows for academic and non-commercial purpose only. The entire project is under the CC-BY-NC 4.0 license.
 
