@@ -16,10 +16,10 @@ if __name__ == "__main__":
     # We make the output dirs
     # We set defaults for guided diffusion image training
     # We load checkpoint models (model.pt, arcface, faceparser and GazeEstimator)
-    #image_editor = ImageEditor(args)
+    image_editor = ImageEditor(args)
 
     # This is the main function
-    #image_editor.edit_image_by_prompt()
+    image_editor.edit_image_by_prompt()
 
     # merge
     #merged_image = merge_faces("./data/targ/001.png", "./output/0_0.png", "./output/result.png")
