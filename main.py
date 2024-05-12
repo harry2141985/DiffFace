@@ -1,6 +1,7 @@
 from optimization.image_editor import ImageEditor
 from optimization.arguments import get_arguments
 from face_crop_plus import Cropper
+from optimization.merge import merge_faces
 
 if __name__ == "__main__":
     
@@ -19,3 +20,7 @@ if __name__ == "__main__":
 
     # This is the main function
     image_editor.edit_image_by_prompt()
+
+    # merge
+    merged_image = merge_faces("./data/targ/001.png", "./output/0_0.png", "./output/result.png")
+
