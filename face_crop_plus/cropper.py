@@ -543,6 +543,9 @@ class Cropper():
                 [t, b, l, r] = padding[image_idx]
                 image = image[t:image.shape[0]-b, l:image.shape[1]-r]
 
+            # Get the original image size
+            original_size = image.shape[:2]
+
             # Apply affine transformation to the image
             transformed_images.append(cv2.warpAffine(
                 image,
@@ -550,7 +553,12 @@ class Cropper():
                 self.output_size,
                 borderMode=border_mode
             ))
-            transformed_meta.append([t, b, l, r, image.shape[0], image.shape[1]])
+
+            # Extract the x and y coordinates from the transformation matrix
+            x_coordinate = transform_matrix[0, 2]
+            y_coordinate = transform_matrix[1, 2]
+
+            transformed_meta.append([x_coordinate, y_coordinate, original_size[0], original_size[1]])
         
         # Normally stacking would be applied unless the list is empty
         numpy_fn = np.stack if len(transformed_images) > 0 else np.array
@@ -564,12 +572,10 @@ class Cropper():
 
       # Define metadata
       metadata = {
-        "t": int(meta[0]),
-        "b": int(meta[1]),
-        "l": int(meta[2]),
-        "r": int(meta[3]),
-        "w": int(meta[4]),
-        "h": int(meta[5])
+        "x": float(meta[0]),
+        "y": float(meta[1]),
+        "w": int(meta[2]),
+        "h": int(meta[3])
       }
 
       # load existing exif data from image
