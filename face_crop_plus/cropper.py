@@ -2,6 +2,9 @@ import os
 import cv2
 import tqdm
 import torch
+import json
+import piexif
+import piexif.helper
 import numpy as np
 from PIL import Image
 
@@ -539,8 +542,6 @@ class Cropper():
                 # Crop out the un-padded area
                 [t, b, l, r] = padding[image_idx]
                 image = image[t:image.shape[0]-b, l:image.shape[1]-r]
-                # Save this in image metadata
-                #save_meta(image, [t, b, l, r], [image.shape[0], image.shape[1]])
 
             # Apply affine transformation to the image
             transformed_images.append(cv2.warpAffine(
@@ -561,27 +562,28 @@ class Cropper():
       # Save the image using OpenCV
       cv2.imwrite(path, image)
 
-      # Open the image using PIL
-      pil_image = Image.open(path)
-
       # Define metadata
       metadata = {
-        "t": meta[0],
-        "b": meta[1],
-        "l": meta[2],
-        "r": meta[3],
-        "w": meta[4],
-        "h": meta[5]
+        "t": int(meta[0]),
+        "b": int(meta[1]),
+        "l": int(meta[2]),
+        "r": int(meta[3]),
+        "w": int(meta[4]),
+        "h": int(meta[5])
       }
-        
-      # Set metadata
-      for key, value in metadata.items():
-        pil_image.info[key] = str(value)
 
-      pil_image.save(path)
-
-      # Close the image
-      pil_image.close()
+      # load existing exif data from image
+      exif_dict = piexif.load(path)
+      # insert custom data in usercomment field
+      exif_dict["Exif"][piexif.ExifIFD.UserComment] = piexif.helper.UserComment.dump(
+          json.dumps(metadata),
+          encoding="unicode"
+      )
+      # insert mutated data (serialised into JSON) into image
+      piexif.insert(
+          piexif.dump(exif_dict),
+          path
+      )
     
     def save_group(
         self,
