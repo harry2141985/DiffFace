@@ -363,9 +363,9 @@ class ImageEditor:
             return out
 
         # load source images and resize to 256, remember our model was trained on 256 images
-        src_dataset  = VGGDataset(path='./data/aligned/src',  img_size=256)
+        src_dataset  = VGGDataset(path='./data/src/aligned',  img_size=256)
         # load destination images and resize to 256, remember our model was trained on 256 images
-        targ_dataset = VGGDataset(path='./data/aligned/targ', img_size=256)
+        targ_dataset = VGGDataset(path='./data/dst/aligned', img_size=256)
         # Use the Python iterable over the dataset
         src_loader   = DataLoader(src_dataset,  num_workers=4, shuffle=False, batch_size=1)
         targ_loader  = DataLoader(targ_dataset, num_workers=4, shuffle=False, batch_size=1)
@@ -476,9 +476,12 @@ class ImageEditor:
                 total_steps = self.diffusion.num_timesteps - self.args.skip_timesteps - 1
                 
                 for j, sample in enumerate(samples):
-                    should_save_image = j % save_image_interval == 0 or j == total_steps
-                    # should_save_image = j == total_steps
                     # save image on save_image_interval or when finishing save_image_interval
+                    # should_save_image = j % save_image_interval == 0 or j == total_steps
+
+                    # save image only on when finishing steps
+                    should_save_image = j == total_steps
+                    
                     if should_save_image:
                         self.metrics_accumulator.print_average_metric() # Prints the average metric
                         pred_image = sample["pred_xstart"][0] # Retrieves the predicted image from the sample dictionary
@@ -550,8 +553,12 @@ class ImageEditor:
                             path_friendly_distance = formatted_distance.replace(".", "")
                             # Save the predicted image in Rank folder with the modified distance string as the filename
                             pred_image_pil.save(self.RankPath+ str(path_friendly_distance) + '.png')
+                            
                             # Save the predicted image in output folder with the iteration number as the filename
-                            pred_image_pil.save(self.args.output_path + '_' + str(iteration_number)+'.png')
+                            # pred_image_pil.save(self.args.output_path + '_' + str(iteration_number)+'.png')
+                            
+                            # Save the predicted image (the unmerged result)
+                            pred_image_pil.save("./data/pred.png")
 
                         # Append the predicted image to the intermediate samples list
                         intermediate_samples[0].append(pred_image_pil)
