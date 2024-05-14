@@ -1,10 +1,11 @@
 # DiffFace: Diffusion-based Face Swapping with Facial Guidance
 
 This is a fork from the original project.
-- Added a colab notebook.
-- Commenting and fixing the code.
-- Documenting the arguments.
 - Added support for input photos alignment and cropping.
+- Added support for merging back to destination photo after swapping has been performed.
+- Fixed several bugs.
+- Added documentation.
+- Added colab notebook.
 
 You can find the colab notebook in this link:
 https://colab.research.google.com/drive/1GNPf5_PnX2QZASdg7P3dC76V8UgrVtWJ?usp=sharing
@@ -109,6 +110,12 @@ default=6000
 Input images are aligned and cropped into data/aligned folder, to be processed by the learning models.
 
 default=512
+
+### --merge_only
+If present, the program will only launch the merging process, no cropping or editing will be performed
+
+## --merge_crop_only
+If present, the program will launc the crop/align and merging processes, no editing will be performed
 
 ## License
 This licence allows for academic and non-commercial purpose only. The entire project is under the CC-BY-NC 4.0 license.
