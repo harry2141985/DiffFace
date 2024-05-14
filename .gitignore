@@ -2,3 +2,4 @@ output/
 data/src/*
 data/targ/*
 data/aligned/
+__pycache__
