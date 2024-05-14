@@ -558,10 +558,6 @@ class Cropper():
             
             #cv2.imwrite("./output/im3.jpg", transformed_image) #512x512
 
-            # width and height of cropped area
-            width = transformed_image.shape[1] * self.face_factor
-            height = transformed_image.shape[0] * self.face_factor
-
             # followig is to get x,y of cropping bix
             # Calculate the inverse transformation matrix
             inverse_transform_matrix = cv2.invertAffineTransform(transform_matrix)
@@ -570,13 +566,15 @@ class Cropper():
             # Transform the corners of the output size back to the original image coordinates
             original_corners = cv2.transform(output_corners.reshape(-1, 1, 2), inverse_transform_matrix).reshape(-1, 2)
             # Find the minimum and maximum x and y coordinates of the original corners
-            min_x = float(np.min(original_corners[:, 0]))
-            max_x = float(np.max(original_corners[:, 0]))
-            min_y = float(np.min(original_corners[:, 1]))
-            max_y = float(np.max(original_corners[:, 1]))
+            min_x = np.float32(np.min(original_corners[:, 0]))
+            max_x = np.float32(np.max(original_corners[:, 0]))
+            min_y = np.float32(np.min(original_corners[:, 1]))
+            max_y = np.float32(np.max(original_corners[:, 1]))
             # Calculate the (x, y) coordinates of the cropped area
             x = min_x
             y = min_y
+            width = max_x - min_x
+            height = max_y - min_y
 
             transformed_meta.append([x, y, width, height, image.shape[1], image.shape[0]])
         
