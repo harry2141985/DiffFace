@@ -6,3 +6,4 @@ matplotlib
 tqdm
 ipykernel
 unidecode
+piexif

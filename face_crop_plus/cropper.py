@@ -538,27 +538,47 @@ class Cropper():
             # Retrieve current image
             image = images[image_idx]
 
+            #cv2.imwrite("./output/im1.jpg", image) #1024x1024 black
+
             if padding is not None:
                 # Crop out the un-padded area
                 [t, b, l, r] = padding[image_idx]
                 image = image[t:image.shape[0]-b, l:image.shape[1]-r]
 
-            # Get the original image size
-            original_size = image.shape[:2]
+            #cv2.imwrite("./output/im2.jpg", image) #1024x576
 
             # Apply affine transformation to the image
-            transformed_images.append(cv2.warpAffine(
+            transformed_image = cv2.warpAffine(
                 image,
                 transform_matrix,
                 self.output_size,
                 borderMode=border_mode
-            ))
+            )
+            transformed_images.append(transformed_image)
+            
+            #cv2.imwrite("./output/im3.jpg", transformed_image) #512x512
 
-            # Extract the x and y coordinates from the transformation matrix
-            x_coordinate = transform_matrix[0, 2]
-            y_coordinate = transform_matrix[1, 2]
+            # width and height of cropped area
+            width = transformed_image.shape[1] * self.face_factor
+            height = transformed_image.shape[0] * self.face_factor
 
-            transformed_meta.append([x_coordinate, y_coordinate, original_size[0], original_size[1]])
+            # followig is to get x,y of cropping bix
+            # Calculate the inverse transformation matrix
+            inverse_transform_matrix = cv2.invertAffineTransform(transform_matrix)
+            # Create a matrix of the four corners of the output size
+            output_corners = np.float32([[0, 0], [self.output_size[0], 0], [0, self.output_size[1]], [self.output_size[0], self.output_size[1]]])
+            # Transform the corners of the output size back to the original image coordinates
+            original_corners = cv2.transform(output_corners.reshape(-1, 1, 2), inverse_transform_matrix).reshape(-1, 2)
+            # Find the minimum and maximum x and y coordinates of the original corners
+            min_x = int(np.min(original_corners[:, 0]))
+            max_x = int(np.max(original_corners[:, 0]))
+            min_y = int(np.min(original_corners[:, 1]))
+            max_y = int(np.max(original_corners[:, 1]))
+            # Calculate the (x, y) coordinates of the cropped area
+            x = min_x
+            y = min_y
+
+            transformed_meta.append([x, y, width, height, image.shape[1], image.shape[0]])
         
         # Normally stacking would be applied unless the list is empty
         numpy_fn = np.stack if len(transformed_images) > 0 else np.array
@@ -570,16 +590,26 @@ class Cropper():
       # Save the image using OpenCV
       cv2.imwrite(path, image)
 
+      mypath = path
+      # convert to JPG if not the case
+      if not path.endswith(".jpg"):
+        im = Image.open(path)
+        mypath = path.replace(".png", ".jpg")
+        im.save(mypath)
+        os.remove(path)
+
       # Define metadata
       metadata = {
         "x": float(meta[0]),
         "y": float(meta[1]),
         "w": int(meta[2]),
-        "h": int(meta[3])
+        "h": int(meta[3]),
+        "parentw": int(meta[4]), # width of parent image (to calc aspect ratio)
+        "parenth": int(meta[5])
       }
 
       # load existing exif data from image
-      exif_dict = piexif.load(path)
+      exif_dict = piexif.load(mypath)
       # insert custom data in usercomment field
       exif_dict["Exif"][piexif.ExifIFD.UserComment] = piexif.helper.UserComment.dump(
           json.dumps(metadata),
@@ -588,7 +618,7 @@ class Cropper():
       # insert mutated data (serialised into JSON) into image
       piexif.insert(
           piexif.dump(exif_dict),
-          path
+          mypath
       )
     
     def save_group(
