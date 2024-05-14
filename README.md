@@ -92,7 +92,7 @@ Increasing the number of iterations allows for more fine-grained transformations
 
 However, it also increases the computational cost and may require more memory.
 
-default=4
+default=1
 
 ### --masking_threshold
 Target-preserving blending is to gradually increase the mask intensity from zero to one, according to the time of the diffusion process T.
