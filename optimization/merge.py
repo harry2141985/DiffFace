@@ -18,9 +18,8 @@ def merge_faces(extension):
   d = json.loads(user_comment)
   print(d)
   height, width, _ = image1.shape
-  print(width)
   fac = width / d["parentw"]
-  print(fac)
+
   # Define the region where image2 will be placed
   x_offset = round(d["x"] * fac) # X-coordinate offset
   y_offset = round(d["y"] * fac) # Y-coordinate offset
@@ -29,6 +28,9 @@ def merge_faces(extension):
 
   x_end = x_offset + img2_width
   y_end = y_offset + img2_height
+
+  print("img2 width: " + str(img2_width))
+  print("img2 height: " + str(img2_height))
 
   # Resize image2
   image2 = cv2.resize(image2, (img2_width, img2_height))

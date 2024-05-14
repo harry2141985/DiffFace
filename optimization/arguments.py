@@ -98,5 +98,18 @@ def get_arguments() -> argparse.Namespace:
     # Input images are aligned and cropped into data/aligned folder, to be processed by the learning models
     # default=512
     parser.add_argument("--crop_size", type=int, help="The size of the aligned and cropped images", default=512)
+    
+    parser.add_argument(
+        "--merge_only",
+        help="Merge only without cropping or editing",
+        action="store_true",
+    )
+
+    parser.add_argument(
+        "--merge_crop_only",
+        help="Merge & crop only without editing",
+        action="store_true",
+    )
+
     args = parser.parse_args()
     return args

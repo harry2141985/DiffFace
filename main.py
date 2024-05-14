@@ -38,6 +38,12 @@ if __name__ == "__main__":
       print(f"No dst found")
       sys.exit()
 
+    do_edit = not args.merge_crop_only and not args.merge_only
+    do_crop = not args.merge_only
+
+    if do_crop:
+      print("Requested Crop")
+
     # We currently only support images (jpg, png)
     shutil.copy2("./data/src."+src_ext , "./data/src/src."+src_ext)
     shutil.copy2("./data/dst."+dst_ext, "./data/dst/dst."+dst_ext)
@@ -47,14 +53,18 @@ if __name__ == "__main__":
     cropper.process_dir(input_dir="./data/src", output_dir="./data/src/aligned")
     cropper.process_dir(input_dir="./data/dst", output_dir="./data/dst/aligned")
     
-    # We make the output dirs
-    # We set defaults for guided diffusion image training
-    # We load checkpoint models (model.pt, arcface, faceparser and GazeEstimator)
-    #image_editor = ImageEditor(args)
+    if do_edit:
+      print("Requested Edit")
 
-    # This is the main function
-    #image_editor.edit_image_by_prompt()
+      # We make the output dirs
+      # We set defaults for guided diffusion image training
+      # We load checkpoint models (model.pt, arcface, faceparser and GazeEstimator)
+      image_editor = ImageEditor(args)
+
+      # This is the main function
+      image_editor.edit_image_by_prompt()
 
     # merge
+    print("Requested Merge")
     merged_image = merge_faces(dst_ext)
 

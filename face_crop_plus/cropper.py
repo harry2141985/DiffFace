@@ -538,14 +538,14 @@ class Cropper():
             # Retrieve current image
             image = images[image_idx]
 
-            #cv2.imwrite("./output/im1.jpg", image) #1024x1024 black
+            cv2.imwrite("./output/im1.jpg", image) #1024x1024 black
 
             if padding is not None:
                 # Crop out the un-padded area
                 [t, b, l, r] = padding[image_idx]
                 image = image[t:image.shape[0]-b, l:image.shape[1]-r]
 
-            #cv2.imwrite("./output/im2.jpg", image) #1024x576
+            cv2.imwrite("./output/im2.jpg", image) #1024x576
 
             # Apply affine transformation to the image
             transformed_image = cv2.warpAffine(
@@ -570,10 +570,10 @@ class Cropper():
             # Transform the corners of the output size back to the original image coordinates
             original_corners = cv2.transform(output_corners.reshape(-1, 1, 2), inverse_transform_matrix).reshape(-1, 2)
             # Find the minimum and maximum x and y coordinates of the original corners
-            min_x = int(np.min(original_corners[:, 0]))
-            max_x = int(np.max(original_corners[:, 0]))
-            min_y = int(np.min(original_corners[:, 1]))
-            max_y = int(np.max(original_corners[:, 1]))
+            min_x = float(np.min(original_corners[:, 0]))
+            max_x = float(np.max(original_corners[:, 0]))
+            min_y = float(np.min(original_corners[:, 1]))
+            max_y = float(np.max(original_corners[:, 1]))
             # Calculate the (x, y) coordinates of the cropped area
             x = min_x
             y = min_y
