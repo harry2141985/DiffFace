@@ -84,7 +84,7 @@ def get_arguments() -> argparse.Namespace:
     # Increasing the number of iterations allows for more fine-grained transformations and can potentially capture more details in the generated samples.
     # However, it also increases the computational cost and may require more memory.
     # default=4
-    parser.add_argument("--iterations_num", type=int, help="The number of iterations", default=4)
+    parser.add_argument("--iterations_num", type=int, help="The number of iterations", default=1)
 
     # Target-preserving blending is to gradually increase the mask intensity from zero to one, according to the time of the diffusion process T.
     # The masking_threshold argument sets the Target-preserving blending time.
@@ -97,7 +97,7 @@ def get_arguments() -> argparse.Namespace:
 
     # Input images are aligned and cropped into data/aligned folder, to be processed by the learning models
     # default=512
-    parser.add_argument("--crop_size", type=int, help="The size of the aligned and cropped images", default=512)
+    parser.add_argument("--crop_size", type=int, help="The size of the aligned and cropped images", default=256)
     
     parser.add_argument(
         "--merge_only",

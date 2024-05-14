@@ -17,25 +17,36 @@ def merge_faces(extension):
   # Deserialize
   d = json.loads(user_comment)
   print(d)
+
+  # Get the inverted transform array
+  # Deserialize the JSON string to a nested Python list
+  inverse = json.loads(d["inverse"])
+  # Convert the transform_matrix_list back to a NumPy array
+  inverse = np.array(inverse)
+
   height, width, _ = image1.shape
   fac = width / d["parentw"]
-  print("fac: " + str(fac))
   # Define the region where image2 will be placed
-  x_offset = round(d["x"] * fac) # X-coordinate offset
-  y_offset = round(d["y"] * fac) # Y-coordinate offset
+  x_offset = round(d["x"]) # X-coordinate offset
+  y_offset = round(d["y"]) # Y-coordinate offset
   img2_height = round(d["h"] * fac)
   img2_width = round(d["w"] * fac)
 
   x_end = x_offset + img2_width
   y_end = y_offset + img2_height
 
-  print("img2 width: " + str(img2_width))
-  print("img2 height: " + str(img2_height))
-  print("x offset: " + str(x_offset))
-  print("y offset: " + str(y_offset))
-
   # Resize image2
   image2 = cv2.resize(image2, (img2_width, img2_height))
+
+  # Apply the inverse transformation to the transformed image
+  image2 = cv2.warpAffine(
+      image2,
+      inverse,
+      (image2.shape[1], image2.shape[0]),
+  )
+
+  # Resize image2
+  #image2 = cv2.resize(image2, (img2_width, img2_height))
 
   image1[y_offset:y_end, x_offset:x_end] = image2
 

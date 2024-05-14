@@ -555,8 +555,8 @@ class Cropper():
                 borderMode=border_mode
             )
             transformed_images.append(transformed_image)
-            
-            #cv2.imwrite("./output/im3.jpg", transformed_image) #512x512
+
+            cv2.imwrite("./output/im3.jpg", transformed_image) #512x512
 
             # followig is to get x,y of cropping bix
             # Calculate the inverse transformation matrix
@@ -576,7 +576,7 @@ class Cropper():
             width = max_x - min_x
             height = max_y - min_y
 
-            transformed_meta.append([x, y, width, height, image.shape[1], image.shape[0]])
+            transformed_meta.append([x, y, width, height, image.shape[1], image.shape[0], inverse_transform_matrix])
         
         # Normally stacking would be applied unless the list is empty
         numpy_fn = np.stack if len(transformed_images) > 0 else np.array
@@ -596,6 +596,11 @@ class Cropper():
         im.save(mypath)
         os.remove(path)
 
+      # Convert the transform_matrix to a nested Python list
+      inverted = meta[6].tolist()
+      # Serialize the transform_matrix_list to a JSON string
+      inverted = json.dumps(inverted)
+
       # Define metadata
       metadata = {
         "x": float(meta[0]),
@@ -603,7 +608,8 @@ class Cropper():
         "w": int(meta[2]),
         "h": int(meta[3]),
         "parentw": int(meta[4]), # width of parent image (to calc aspect ratio)
-        "parenth": int(meta[5])
+        "parenth": int(meta[5]),
+        "inverse": inverted
       }
 
       # load existing exif data from image
