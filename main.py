@@ -26,6 +26,7 @@ if __name__ == "__main__":
 
     os.makedirs(os.path.dirname("./data/src/aligned"), exist_ok=True)
     os.makedirs(os.path.dirname("./data/dst/aligned"), exist_ok=True)
+    os.makedirs(os.path.dirname("./data/debug"), exist_ok=True)
 
     src_ext = get_file_extension("./data", "src")
     dst_ext = get_file_extension("./data", "dst")
@@ -66,5 +67,5 @@ if __name__ == "__main__":
 
     # merge
     print("Requested Merge")
-    merged_image = merge_faces(dst_ext)
+    merged_image = merge_faces(args, dst_ext)
 

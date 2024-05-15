@@ -69,7 +69,7 @@ def get_arguments() -> argparse.Namespace:
 
     # The output path, default=output
     # folder will be created if doesn't exist
-    parser.add_argument("--output_path", type=str, default="output")
+    parser.add_argument("--output_path", type=str, default="data/debug")
 
     # The output result file
     # default=output.png

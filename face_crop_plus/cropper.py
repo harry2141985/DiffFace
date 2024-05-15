@@ -515,7 +515,7 @@ class Cropper():
         transformed_images = []
         transformed_meta = []
         border_mode = getattr(cv2, f"BORDER_{self.padding.upper()}")
-        
+
         for landmarks_idx, image_idx in enumerate(indices):
             if self.allow_skew:
                 # Perform full perspective transformation
@@ -538,14 +538,14 @@ class Cropper():
             # Retrieve current image
             image = images[image_idx]
 
-            cv2.imwrite("./output/im1.jpg", image) #1024x1024 black
+            #cv2.imwrite("./output/im1.jpg", image) #1024x1024 black
 
             if padding is not None:
                 # Crop out the un-padded area
                 [t, b, l, r] = padding[image_idx]
                 image = image[t:image.shape[0]-b, l:image.shape[1]-r]
 
-            cv2.imwrite("./output/im2.jpg", image) #1024x576
+            cv2.imwrite("./data/debug/base.jpg", image) #1024x576
 
             # Apply affine transformation to the image
             transformed_image = cv2.warpAffine(
@@ -556,7 +556,7 @@ class Cropper():
             )
             transformed_images.append(transformed_image)
 
-            cv2.imwrite("./output/im3.jpg", transformed_image) #512x512
+            #cv2.imwrite("./output/im3.jpg", transformed_image) #512x512
 
             # followig is to get x,y of cropping bix
             # Calculate the inverse transformation matrix
