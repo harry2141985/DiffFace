@@ -27,6 +27,8 @@ if __name__ == "__main__":
 
     os.makedirs(os.path.dirname("./data/src/aligned"), exist_ok=True)
     os.makedirs(os.path.dirname("./data/dst/aligned"), exist_ok=True)
+    os.makedirs(os.path.dirname("./data/dst/preded"), exist_ok=True)
+    os.makedirs(os.path.dirname("./data/dst/merged"), exist_ok=True)
     os.makedirs(os.path.dirname("./data/debug"), exist_ok=True)
 
     src_ext = get_file_extension("./data", "src")
@@ -75,7 +77,8 @@ if __name__ == "__main__":
       # We align and crop images and put them into /data/aligned
       cropper = Cropper(face_factor=0.7, strategy="largest", output_size=args.crop_size)
       cropper.process_dir(input_dir="./data/src", output_dir="./data/src/aligned")
-      cropper.process_dir(input_dir="./data/dst", output_dir="./data/dst/aligned")
+      if not args.no_extract:
+        cropper.process_dir(input_dir="./data/dst", output_dir="./data/dst/aligned")
       
     if do_edit:
       print("Requested Edit")

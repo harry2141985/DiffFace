@@ -2,6 +2,7 @@ import os
 import cv2
 import glob
 import lpips
+import itertools
 import numpy as np
 import face_alignment
 
@@ -51,6 +52,11 @@ class VGGDataset(torch.utils.data.Dataset):
         image = Image.open(file).convert('RGB')
         x = self.transform(image)
         return x
+
+    def getfilename(self, index):
+      path = Path(self.files[index])
+      filename = path.name
+      return filename
 
     def __len__(self):
         return len(self.files)
@@ -379,20 +385,22 @@ class ImageEditor:
                       [204, 0, 0], [102, 51, 0], [0, 0, 0], [76, 153, 0], [102, 204, 0], [255, 255, 0], [0, 0, 153],
                       [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]]
 
-        length = len(src_loader)
-        print('Number of Test Data: ', length)
+        length = len(targ_loader)
+        print('Number of dst Data: ', length)
         path = self.args.output_path
 
         # We will be iterating over each src and targ image for processing
         for step in range(length):
             # save current iteration of src and targ to self
             try:
-                self.src_image = next(src_iter).to(self.device).float()
+                self.src_image = next(itertools.islice(src_loader, 0, None)).to(self.device).float() # only one src image
+                # self.src_image = next(src_iter).to(self.device).float()
                 self.targ_image = next(targ_iter).to(self.device).float()
             except StopIteration:
                 src_iter        = iter(src_loader)
                 targ_iter       = iter(targ_loader)
-                self.src_image  = next(src_iter).to(self.device).float()
+                #self.src_image  = next(src_iter).to(self.device).float()
+                self.src_image = next(itertools.islice(src_loader, 0, None)).to(self.device).float() # only one src image
                 self.targ_image = next(targ_iter).to(self.device).float()
 
             # Clone the target image for making the mask
@@ -421,7 +429,7 @@ class ImageEditor:
             # enable gradient tracking for the tensor
             self.mask.requires_grad_()
 
-            # TODO
+            # TODO document
             self.src_image  = self.src_image  * 2.0 - 1.0
             self.targ_image = self.targ_image * 2.0 - 1.0
 
@@ -558,7 +566,8 @@ class ImageEditor:
                             # pred_image_pil.save(self.args.output_path + '_' + str(iteration_number)+'.png')
                             
                             # Save the predicted image (the unmerged result)
-                            pred_image_pil.save("./data/pred.png")
+                            fname = targ_dataset.getfilename(step)
+                            pred_image_pil.save(fname)
 
                         # Append the predicted image to the intermediate samples list
                         intermediate_samples[0].append(pred_image_pil)
