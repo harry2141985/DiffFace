@@ -567,7 +567,7 @@ class ImageEditor:
                             
                             # Save the predicted image (the unmerged result)
                             fname = targ_dataset.getfilename(step)
-                            pred_image_pil.save(fname)
+                            pred_image_pil.save("./data/dst/preded/" + fname)
 
                         # Append the predicted image to the intermediate samples list
                         intermediate_samples[0].append(pred_image_pil)

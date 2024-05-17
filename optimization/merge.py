@@ -3,6 +3,8 @@ import os
 import cv2
 import json
 import piexif
+import ffmpeg
+from optimization import pathex
 import numpy as np
 
 def merge_faces(args, extension):
@@ -15,7 +17,7 @@ def merge_faces(args, extension):
   for filename in os.listdir(input_path):
     file_path = os.path.join(input_path, filename)
     if os.path.isfile(file_path):
-      image1 = os.path.join(reference_path, filename) # the dst full image
+      image1 = os.path.join(reference_path, filename.replace(".jpg", ".png")) # the dst full image
       image1 = cv2.imread(image1)
       image2 = cv2.imread(file_path, cv2.IMREAD_UNCHANGED)
 
@@ -68,3 +70,60 @@ def merge_faces(args, extension):
       result = cv2.add(image1_part, image2_part)
 
       cv2.imwrite(os.path.join(output_path, filename), result)
+
+    # Now generate video
+    if os.path.exists("./data/dst.mp4"):
+      input_folder = "./data/dst/merged"
+      output_file = "./data/result.mp4"
+      reference_file = "./data/dst.mp4"
+      video_id = None
+      audio_id = None
+      ref_in_a = None
+      #probing reference file
+      probe = ffmpeg.probe(reference_file)
+      #getting first video and audio streams id with fps
+      for stream in probe['streams']:
+        if video_id is None and stream['codec_type'] == 'video':
+          video_id = stream['index']
+          fps = stream['r_frame_rate']
+          if audio_id is None and stream['codec_type'] == 'audio':
+            audio_id = stream['index']
+
+      if audio_id is not None:
+        #has audio track
+        ref_in_a = ffmpeg.input(reference_file)[str(audio_id)]
+
+      if fps is None:
+        fps = 25
+
+      input_image_paths = pathex.get_image_paths(input_folder)
+      i_in = ffmpeg.input('pipe:', format='image2pipe', r=fps)
+      output_args = [i_in]
+
+      if ref_in_a is not None:
+        output_args += [ref_in_a]
+
+      output_args += [output_file]
+
+      output_kwargs = {}
+
+      output_kwargs.update ({"c:v": "libx264",
+                              "crf": "0",
+                              "pix_fmt": "yuv420p",
+                            })
+
+      job = ( ffmpeg.output(*output_args, **output_kwargs).overwrite_output() )
+
+      try:
+        job_run = job.run_async(pipe_stdin=True)
+
+        for image_path in input_image_paths:
+          with open (image_path, "rb") as f:
+            image_bytes = f.read()
+            job_run.stdin.write (image_bytes)
+
+        job_run.stdin.close()
+        job_run.wait()
+      except:
+        print("ffmpeg fail, job commandline:" + str(job.compile()))
+
