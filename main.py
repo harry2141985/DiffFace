@@ -57,15 +57,13 @@ if __name__ == "__main__":
       if not args.no_extract:
         # extract frames to images
         print(f"Extracting video frames..")
-        input_path = "./data/dst." + dst_ext
-        output_path = "./data/dst"
-        ffmpeg.input(input_path)
+        job = ffmpeg.input("./data/dst." + dst_ext)
         kwargs = {'pix_fmt': 'rgb24'}
-        ffmpeg.output(str(output_path / ('%5d.png')), **kwargs )
+        job = job.output("./data/dst/%5d.png", **kwargs)
         try:
-          ffmpeg = ffmpeg.run()
+          job = job.run()
         except:
-          print(f"ffmpeg fail, job commandline:" + str(ffmpeg.compile()))
+          print(f"ffmpeg fail, job commandline:" + str(job.compile()))
     else:
       print(f"dst can only be jpg, png or mp4")
       sys.exit()
