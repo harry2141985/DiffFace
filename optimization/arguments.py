@@ -111,5 +111,11 @@ def get_arguments() -> argparse.Namespace:
         action="store_true",
     )
 
+    parser.add_argument(
+        "--no_extract",
+        help="Do not extract frames from video (already done!)",
+        action="store_true",
+    )
+
     args = parser.parse_args()
     return args

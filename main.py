@@ -2,6 +2,7 @@ import os
 import shutil
 import sys
 import glob
+import ffmpeg
 from optimization.image_editor import ImageEditor
 from optimization.arguments import get_arguments
 from face_crop_plus.cropper import Cropper
@@ -42,12 +43,36 @@ if __name__ == "__main__":
     do_edit = not args.merge_crop_only and not args.merge_only
     do_crop = not args.merge_only
 
+    # We only support jpg and png for src
+    if src_ext in ["jpg", "png"]:
+      shutil.copy2("./data/src."+src_ext , "./data/src/src."+src_ext)
+    else:
+      print(f"src can only be jpg or png")
+      sys.exit()
+
+    # We only support jpg, png and mp4 for dst
+    if dst_ext in ["jpg", "png"]:
+      shutil.copy2("./data/dst."+dst_ext, "./data/dst/dst."+dst_ext)
+    elif dst_ext in ["mp4"]:
+      if not args.no_extract:
+        # extract frames to images
+        print(f"Extracting video frames..")
+        input_path = "./data/dst." + dst_ext
+        output_path = "./data/dst"
+        ffmpeg.input(input_path)
+        kwargs = {'pix_fmt': 'rgb24'}
+        ffmpeg.output(str(output_path / ('%5d.png')), **kwargs )
+        try:
+          ffmpeg = ffmpeg.run()
+        except:
+          print(f"ffmpeg fail, job commandline:" + str(ffmpeg.compile()))
+    else:
+      print(f"dst can only be jpg, png or mp4")
+      sys.exit()
+
+
     if do_crop:
       print("Requested Crop")
-
-      # We currently only support images (jpg, png)
-      shutil.copy2("./data/src."+src_ext , "./data/src/src."+src_ext)
-      shutil.copy2("./data/dst."+dst_ext, "./data/dst/dst."+dst_ext)
 
       # We align and crop images and put them into /data/aligned
       cropper = Cropper(face_factor=0.7, strategy="largest", output_size=args.crop_size)
