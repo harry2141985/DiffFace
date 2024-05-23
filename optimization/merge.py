@@ -15,9 +15,9 @@ def merge_faces(args, extension):
 
   # for each image in input path
   for filename in os.listdir(input_path):
-    file_path = os.path.join(input_path, filename)
+    file_path = os.path.join(input_path, 'dst.jpg')
     if os.path.isfile(file_path):
-      image1 = os.path.join(reference_path, filename.replace(".jpg", ".png")) # the dst full image
+      image1 = os.path.join(reference_path, 'dst.' + extension) # the dst full image
       image1 = cv2.imread(image1)
       image2 = cv2.imread(file_path, cv2.IMREAD_UNCHANGED)
 
@@ -126,4 +126,3 @@ def merge_faces(args, extension):
       job_run.wait()
     except:
       print("ffmpeg fail, job commandline:" + str(job.compile()))
-
