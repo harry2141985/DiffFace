@@ -1,10 +1,9 @@
 # DiffFace: Diffusion-based Face Swapping with Facial Guidance
 
-This is a fork from the original project.
-- Added support for input photos alignment and cropping.
-- Added support for merging back to destination photo after swapping has been performed.
-- Fixed several bugs.
-- Added documentation.
+- Added support for working with several photos.
+- Added support for videos as well.
+- Added support for input photos automatic alignment and cropping.
+- Added support for merging back to destination photo or video after swapping has been performed.
 - Added colab notebook.
 
 You can find the colab notebook in this link:
